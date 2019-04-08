@@ -8,13 +8,115 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
 
+    @IBOutlet weak var collectionView: UICollectionView!
+    
+    @IBOutlet weak var lbYear: UILabel!
+    
+    var year: Int = Int()
+    var items:[Any] = []
+    
+    let viewModel = CalendarViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+       
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        var dateComponents: DateComponents
+        let dateYear = Date()
+        let calendar = Calendar(identifier: .gregorian)
+        dateComponents = calendar.dateComponents([.year], from: dateYear)
+        lbYear.text = String(dateComponents.year!)
+        
+        
     }
-
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        //return 12
+        return viewModel.numberOfSection()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //return 31
+        return viewModel.numberOfRows(for: section)
+    }
+    //MARK: - Collection
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellWidth =  collectionView.frame.size.width / 7
+        
+        return CGSize(width: cellWidth, height: 70
+        )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        
+        cell.contentView.backgroundColor = .white
+        
+        if let label = cell.contentView.viewWithTag(10) as? UILabel{
+            
+            label.text = ""
+            
+            let prewDayCount = self.viewModel.numberOfPrewDay(for: indexPath.section)
+            
+            if (indexPath.row > prewDayCount - 1) {
+                
+                label.text = String(indexPath.row + 1 - prewDayCount)
+            }
+            
+            
+        }
+        
+        return cell
+        
+    }
+    //MARK:- Footer
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.size.width, height: 50)
+    }
+   
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return .zero
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        if (kind == UICollectionView.elementKindSectionFooter){
+            
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
+            
+            return footer
+        }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! CalendarHeaderView
+        
+        header.lbHeader.text = viewModel.titleOfMonth(for: indexPath.section)
+        
+        return header
+    }
+    
+    @IBAction func btMinusYear(_ sender: UIButton) {
+        
+        let strYear = lbYear.text
+        var output = Int(strYear!)
+        output = output!-1
+        lbYear.text = String(output!)
+        
+    }
+    
+    
+    @IBAction func btPlusYear(_ sender: UIButton) {
+        
+        let strYear = lbYear.text
+        var output = Int(strYear!)
+        output = output!+1
+        lbYear.text = String(output!)
+    }
+    
 
 }
 
