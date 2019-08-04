@@ -15,7 +15,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     @IBOutlet weak var lbYear: UILabel!
     
-    var year: Int = Int()
+    var selectYear: Int = Int()
     var items:[Any] = []
     
     let viewModel = CalendarViewModel()
@@ -42,7 +42,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //return 31
-        return viewModel.numberOfRows(for: section)
+        return viewModel.numberOfRows(for: section, year: selectYear)
     }
     //MARK: - Collection
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -61,7 +61,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             label.text = ""
             
-            let prewDayCount = self.viewModel.numberOfPrewDay(for: indexPath.section)
+            let prewDayCount = self.viewModel.numberOfPrewDay(for: indexPath.section, year: selectYear)
             
             if (indexPath.row > prewDayCount - 1) {
                 
@@ -104,8 +104,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let strYear = lbYear.text
         var output = Int(strYear!)
         output = output!-1
-        lbYear.text = String(output!)
-        
+        selectYear = output!
+        DispatchQueue.main.async {
+            self.lbYear.text = String(output!)
+            self.collectionView.reloadData()
+        }
     }
     
     
@@ -114,9 +117,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let strYear = lbYear.text
         var output = Int(strYear!)
         output = output!+1
-        lbYear.text = String(output!)
+        selectYear = output!
+        DispatchQueue.main.async {
+            self.lbYear.text = String(output!)
+           // self.
+        }
+        
+        collectionView.reloadData()
     }
-    
-
 }
-

@@ -33,9 +33,9 @@ class CalendarDataSource{
     }
     //MARK: - Days
     
-    func numberOfDaysInMonth(for month: Int) -> Int {
+    func numberOfDaysInMonth(for month: Int, year: Int) -> Int {
         
-        let firstDate = getFirstDayOfMonth(for: month)
+        let firstDate = getFirstDayOfMonth(for: month, year: year)
         
         let weekday = numberOfDaysInWeek(for: firstDate)
         print(weekday)
@@ -47,18 +47,22 @@ class CalendarDataSource{
         return 0
     }
     
-    func numberOfPrevDaysInMonth(for month: Int) -> Int {
+    func numberOfPrevDaysInMonth(for month: Int, year: Int) -> Int {
         
-        let firstDate = getFirstDayOfMonth(for: month)
+        let firstDate = getFirstDayOfMonth(for: month, year: year)
         let weekday = numberOfDaysInWeek(for: firstDate)                
         return (weekday - 1)
     }
     
-    fileprivate func getFirstDayOfMonth(for month: Int) -> Date {
+    fileprivate func getFirstDayOfMonth(for month: Int, year: Int) -> Date {
         
         let calendarComponents : Set<Calendar.Component> = [ .year, .month, .day]
         
         var components = calendar.dateComponents(calendarComponents, from: Date())
+        
+        if year > 0 {
+            components.year = year
+        }
         
         components.month = month
         components.day = 1

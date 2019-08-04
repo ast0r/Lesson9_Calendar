@@ -24,15 +24,15 @@ class CalendarViewModel {
        
     }
     
-    func numberOfRows(for section: Int) -> Int {
+    func numberOfRows(for section: Int, year: Int) -> Int {
         let month = section + 1
-        return dataSource.numberOfDaysInMonth(for: month)
+        return dataSource.numberOfDaysInMonth(for: month, year: year)
         
     }
     
-    func numberOfPrewDay(for section: Int) -> Int {
+    func numberOfPrewDay(for section: Int, year: Int) -> Int {
         let month = section + 1
-        return dataSource.numberOfPrevDaysInMonth(for: month)
+        return dataSource.numberOfPrevDaysInMonth(for: month, year: year)
         
     }
     
